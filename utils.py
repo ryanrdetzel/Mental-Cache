@@ -9,8 +9,12 @@ import hashlib, time, base64
 
 DBNAME="mental_cache.hdb" ## move to config?
 
-def create_page(file_name):
+def create_page(file_name,from_page=None):
+    
     content = '{"order": "","name": "Untitled","components": {},"last_id": 0}'
+    if from_page is not None:
+        content = fetch_file(from_page)
+
     obj = json.loads(content)
     obj["name"] = file_name
     content = json.dumps(obj)
@@ -21,23 +25,11 @@ def create_page(file_name):
     db.open(DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
 
     ## Make sure we don't conflict with that name
-    ## There has to be a better way to do this...?!
     chars = string.letters.lower() + string.digits
-    valid = None
-    count = 0
-    page_name = ""
-    while valid is None:
-        try:
-            page_name = ''.join([choice(chars) for i in xrange(8)])
-            db.get(page_name)
-            valid = None
-        except:
-            valid = "good"
+    page_name = ''.join([choice(chars) for i in xrange(8)])
+    while db.has_key(page_name):
+        page_name = ''.join([choice(chars) for i in xrange(8)])
 
-        count = count + 1
-        if count > 1000:
-            return None
-    
     db.put(page_name,content)
     ## set permissions
     db.put(page_name + ":perm", session.userid)

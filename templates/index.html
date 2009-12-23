@@ -326,7 +326,7 @@
 			padding:10px;
 			display:none;
 		}
-	    div#new_page{
+	    div#new_page, div#copy_page{
             padding:10px;
             display:none;
         }	
@@ -1246,6 +1246,13 @@
         function cancelNewPage(){
              $('#new_page').hide("blind",{},200);
         }
+
+        function copyPage(){
+            $('#copy_page').show("blind",{},300);
+        }
+        function cancelCopyPage(){
+             $('#copy_page').hide("blind",{},200);
+        }
 	</script>
 	
 	
@@ -1260,8 +1267,18 @@
 			<li><a href="#" onclick="showBookmarks(); return false;">Bookmarks</a><img src="/down.png"/></li>
 			<!--<li><a href="">Recently Opened</a><img src="/down.png"/></li>
 			<li><a href="">All Pages</a><img src="/down.png"/></li>-->
+            <li><a href="#" onclick="copyPage();">Copy Page</a></li>
             <li><a href="/page/delete">Delete Page</a></li>
 		</ul>
+        <div id="copy_page">
+#end raw
+            <form action="/page/$page_name/copy" method="get">
+#raw
+            <b>New Page Name:</b> <input type="text" name="new_name" />
+            <input type="submit" value=" Copy Page " /> <span class="txt"> or</span> <a href="#" class="cancel" onclick="cancelCopyPage(); return false;">cancel</a>
+            </form>
+        </div>
+
         <div id="new_page">
             <form action="/page/new_page" method="post">
             <b>New Page Name:</b> <input type="text" name="page_name" />
@@ -1270,8 +1287,9 @@
         </div>
 
 			<div id="ad_info">
-                <a href="/3/mental-cache.html">Mental Cache</a> - 
-                <a href="/2/test-page.html">Test Page</a>
+                <a href="/4kuytt0z/mental-cache.html">Mental Cache</a> - 
+                <a href="/1s4modzv/test-page.html">Test Page</a> - 
+                <a href="/16qbwedl/workd.html">Work Related</a>
 			</div>
 	</div>
 

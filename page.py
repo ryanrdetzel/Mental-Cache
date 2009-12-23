@@ -11,6 +11,7 @@ import logging
 
 urls = (
     '/new_page','new_page',
+    '/([\w|-]+)/copy', 'copy',
     '/([\w|-]+)/rename', 'rename',
     '/([\w|-]+)/(\d+)/reorder', 'reorder_component',
     '/([\w|-]+)/reorder', 'reorder',
@@ -26,7 +27,6 @@ urls = (
 )
 
 app_page = web.application(urls, globals())
-#session = web.session.Session(app_page, web.session.DiskStore('sessions'), initializer={'userid': 0})
 
 class index:
     """Return the obj for this page"""
@@ -49,6 +49,15 @@ class index:
         except:
             utils.handle_error("failed to read file")
 
+class copy:
+    def GET(self,page_name):
+        data = web.input(new_name="Default Page")
+        page_name = utils.create_page(data.new_name,page_name)
+        if page_name is None:
+            return 'FATAL'
+        else:
+            raise web.seeother('http://%s/%s/test.html' % (web.ctx.get('host'),page_name))
+
 class new_page:
     def POST(self):
         data = web.input(page_name="")
@@ -56,7 +65,7 @@ class new_page:
         if page_name is None:
             return 'FATAL'
         else:
-            raise web.seeother('../%s/test.html' % page_name)
+            raise web.seeother('http://%s/%s/test.html' % (web.ctx.get('host'),page_name))
 
 class new_component:
     def GET(self,page_name):

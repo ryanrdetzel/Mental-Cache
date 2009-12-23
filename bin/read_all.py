@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import pytc
 
 DBNAME="../mental_cache.hdb"
