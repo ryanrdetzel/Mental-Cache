@@ -3,7 +3,6 @@ import web
 import page
 import upload
 import utils
-#from google.appengine.ext import db
 import logging
 from Cheetah.Template import Template
 import os
@@ -12,57 +11,73 @@ urls = (
     '/page', page.app_page,
     '/upload', upload.app_upload,
     '/login', "login",
-    '/(\d+)-(?:[\w|-]+)\.html', "index",
-    "/(.*)", "index"
+    '/(\w+)\/(?:[\w|-]+)\.html', "index",
+    '/', "dashboard",
+    "/(.*)", "default"
 )
 
 class login:
     def GET(self):
-        #utils.login()    
-        #return '<form action="/login" method="POST"><input type="text" name="email" value="ryan" /><input type="submit" /></form>'
         path = os.path.join(os.path.dirname(__file__), 'templates/login.html')
-        template_values = { 'user':'test',}
+        template_values = {}
         tmpl = Template( file = path, searchList = (template_values,) )
         return tmpl
 
     def POST(self):
-        if (utils.login() is None):
-            raise web.seeother('/login')
+        ## Check if they are valid
+        data = web.input(email="")
+        if (data.email == "ryan"):
+            session.userid = "ff5634"
         else:
-            raise web.seeother('/index.html')
-    
-#class Page(db.Model):
-#    id = db.IntegerProperty()
-#    title = db.StringProperty()
-#    tags = db.StringListProperty()
-#    content = db.TextProperty()
-#    owner = db.IntegerProperty(default=666)
+            session.userid = "ff5633"
 
-class redirect:
-    def GET(self,page_name):
-        if utils.set_page_id(page_name):
-            web.redirect("/index.html")
-        else:
-            return "FAIL"
+        raise web.seeother('/')
+    
+class dashboard:
+    def GET(self):
+        if session.userid > 0:
+            path = os.path.join(os.path.dirname(__file__), 'templates/dashboard.html')
+            template_values = {}
+            tmpl = Template( file = path, searchList = (template_values,) )
+            return tmpl
+        raise web.seeother('/login')
+
+class default:
+    def GET(self,what):
+        return 'default'
+
 
 class index:
     def GET(self,page_name):
-        if page_name == "w": 
-           return 'test'
-            #page = Page()
-            #page.id = 1
-            #page.title = "Random Stuff"
-            #page.tags = ["test","ryan","links"]
-            #page.content = '{"name": "Untitled", "order": "", "components": {}, "last_id":0 }'
-            #page.put()
+        if session.userid > 0:
+            ## Validate that this user can view this page
+            if utils.check_permissions(page_name,session.userid): 
+                path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+                template_values = { 'page_name':page_name,}
+            else:
+                return 'DENIED'
         else:
-            #path = os.path.join(os.path.dirname(__file__), 'static/index.html')
-            path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-            template_values = { 'page_name':page_name,}
-            tmpl = Template( file = path, searchList = (template_values,) )
-            return tmpl
+            path = os.path.join(os.path.dirname(__file__), 'templates/login.html')
+            template_values = {}
+    
+        tmpl = Template( file = path, searchList = (template_values,) )
+        return tmpl
 
 app = web.application(urls, globals())
+
+web.config.debug = False
+
+web.config.session_parameters['cookie_name'] = 'mentalcache'
+web.config.session_parameters['cookie_domain'] = None
+web.config.session_parameters['timeout'] = 86400, #24 * 60 * 60, # 24 hours   in seconds
+#web.config.session_parameters['ignore_expiry'] = True
+web.config.session_parameters['ignore_change_ip'] = True
+web.config.session_parameters['secret_key'] = 'fLjU209834kjhsdf8213'
+web.config.session_parameters['expired_message'] = 'Session expired'
+
+session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'userid': 0})
+web.config._session = session
+
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.DEBUG)
     app.run()

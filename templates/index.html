@@ -148,7 +148,7 @@
 			width:68px;
 			height:20px;
 			left:-20px;
-			background: url(edit.png);
+			background: url(/edit.png);
 			background-repeat:no-repeat;
 			top:0;
 			font-size:12px;
@@ -326,7 +326,10 @@
 			padding:10px;
 			display:none;
 		}
-		
+	    div#new_page{
+            padding:10px;
+            display:none;
+        }	
 		div#page_index{
 			background-color:#fff;
 			border:1px solid #ccc;
@@ -361,7 +364,7 @@
 		var hostname = '204.232.202.197';
 		var last_element_id = "page_name";
 #end raw
-		var page_name = $page_name;
+		var page_name = "$page_name";
 #raw
 		var currentlyHovering;
 		var currentlyEditing;
@@ -460,7 +463,7 @@
 				alert("You must enter a valid name for this page");
 				return;
 			}
-			
+		
 			$.get('http://'+hostname+'/page/'+page_name+'/rename?callback=?',{ "new_name": new_name }, function(data){
 				if (check_error(data)){
 					$('#page_name').html(data.name).effect("highlight",{ "mode":"show"},1500);
@@ -469,7 +472,6 @@
 					currentlyEditing = null;
 				}
 			},"json");
-			
 			
 		}
 		
@@ -659,7 +661,7 @@
 					count++;
 					jQuery("<li />")
 					             .attr("id",component.type + "_" + id + "_" + i)
-								 .html('<input type="checkbox" checked="checked" onclick="change_list_item_status(this,\'checkbox_' + id + '_' + i +'\');"/> <a href="#" onclick="removeListItem(\'list_'+id+'_'+i+'\');return false;"><img src="delete1.png" /></a> ' + item.title + ' (' + item.completed + ')')
+								 .html('<input type="checkbox" checked="checked" onclick="change_list_item_status(this,\'checkbox_' + id + '_' + i +'\');"/> <a href="#" onclick="removeListItem(\'list_'+id+'_'+i+'\');return false;"><img src="/delete1.png" /></a> ' + item.title + ' (' + item.completed + ')')
 					             .addClass("list_completed")
 					             .appendTo($('#list_completed_'+id));
 										
@@ -920,7 +922,7 @@
 					}
 					
 					if ($('.edit').size() == 0){
-			       		$(this).append($('<div class="edit" id="edit_'+id+'" ><a href="#" onclick="remove(\''+id+'\');return false;"><img src="delete1.png" /></a>&nbsp;<a href="#" onclick="edit_'+type+'(\''+id+'\');return false;">edit</a>&nbsp;<a href="#" class="move" onclick="return false;"><img src="move1.png" /></a>&nbsp;</div>'));
+			       		$(this).append($('<div class="edit" id="edit_'+id+'" ><a href="#" onclick="remove(\''+id+'\');return false;"><img src="/delete1.png" /></a>&nbsp;<a href="#" onclick="edit_'+type+'(\''+id+'\');return false;">edit</a>&nbsp;<a href="#" class="move" onclick="return false;"><img src="/move1.png" /></a>&nbsp;</div>'));
 					currentlyHovering = this;
 					//$(".move").disableSelection();
 					$(".move").mousedown(function(){
@@ -944,7 +946,7 @@
 			      function () {
 				if (currentlyEditing == id) return;
 				if ($('.edit_item').size() == 0){
-			       	$(this).append($('<div class="edit_item" id="edit_'+id+'" style="margin-left:-15px;"><a href="#" onclick="removeListItem(\''+id+'\');return false;"><img src="delete1.png" /></a>&nbsp;<a href="#" onclick="edit_list_item(\''+id+'\');return false;">edit</a>&nbsp;<a href="#" class="move" onclick="return false;"><img src="move1.png" /></a>&nbsp;</div>'));
+			       	$(this).append($('<div class="edit_item" id="edit_'+id+'" style="margin-left:-15px;"><a href="#" onclick="removeListItem(\''+id+'\');return false;"><img src="/delete1.png" /></a>&nbsp;<a href="#" onclick="edit_list_item(\''+id+'\');return false;">edit</a>&nbsp;<a href="#" class="move" onclick="return false;"><img src="/move1.png" /></a>&nbsp;</div>'));
 					//currentlyHovering = this;
 					//$(".move").disableSelection();
 					$(".move").mousedown(function(){
@@ -999,7 +1001,7 @@
 					/* Move below */
 					jQuery("<li />")
 					             .attr("id", "list_" + data.id + "_" + data.list_item_id)
-								 .html('<input type="checkbox" checked="checked" onclick="change_list_item_status(this,\'checkbox_' + data.id + '_' + data.list_item_id +'\');"/> <a href="#" onclick="removeListItem(\'list_'+data.id+'_'+data.list_item_id+'\');return false;"><img src="delete1.png" /></a> ' + data.title + ' (' + data.completed + ')')
+								 .html('<input type="checkbox" checked="checked" onclick="change_list_item_status(this,\'checkbox_' + data.id + '_' + data.list_item_id +'\');"/> <a href="#" onclick="removeListItem(\'list_'+data.id+'_'+data.list_item_id+'\');return false;"><img src="/delete1.png" /></a> ' + data.title + ' (' + data.completed + ')')
 					             .addClass("list_completed")
 					             .prependTo($('#list_completed_'+id))
 								 .show("highlight",{},500);
@@ -1238,6 +1240,12 @@
 			$('#ad_info').show("blind",{},300);
 		}
 
+        function newPage(){
+            $('#new_page').show("blind",{},300);
+        }
+        function cancelNewPage(){
+             $('#new_page').hide("blind",{},200);
+        }
 	</script>
 	
 	
@@ -1248,14 +1256,22 @@
 	<div id="page_index">
 		<ul>
 			<li><b>Pages:</b></li>
-			<li><a href=""><b>New Page</b></a></li>
-			<li><a href="#" onclick="showBookmarks(); return false;">Bookmarks</a><img src="down.png"/></li>
-			<li><a href="">Recently Opened</a><img src="down.png"/></li>
-			<li><a href="">All Pages</a><img src="down.png"/></li>
+			<li><a href="#" onclick="newPage();"><b>New Page</b></a></li>
+			<li><a href="#" onclick="showBookmarks(); return false;">Bookmarks</a><img src="/down.png"/></li>
+			<!--<li><a href="">Recently Opened</a><img src="/down.png"/></li>
+			<li><a href="">All Pages</a><img src="/down.png"/></li>-->
+            <li><a href="/page/delete">Delete Page</a></li>
 		</ul>
+        <div id="new_page">
+            <form action="/page/new_page" method="post">
+            <b>New Page Name:</b> <input type="text" name="page_name" />
+            <input type="submit" value=" Create Page " /> <span class="txt"> or</span> <a href="#" class="cancel" onclick="cancelNewPage(); return false;">cancel</a>
+            </form>
+        </div>
+
 			<div id="ad_info">
-                <a href="/3-mental-cache.html">Mental Cache</a> - 
-                <a href="/2-test-page.html">Test Page</a>
+                <a href="/3/mental-cache.html">Mental Cache</a> - 
+                <a href="/2/test-page.html">Test Page</a>
 			</div>
 	</div>
 

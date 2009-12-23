@@ -10,6 +10,7 @@ from datetime import datetime
 import logging
 
 urls = (
+    '/new_page','new_page',
     '/([\w|-]+)/rename', 'rename',
     '/([\w|-]+)/(\d+)/reorder', 'reorder_component',
     '/([\w|-]+)/reorder', 'reorder',
@@ -25,6 +26,7 @@ urls = (
 )
 
 app_page = web.application(urls, globals())
+#session = web.session.Session(app_page, web.session.DiskStore('sessions'), initializer={'userid': 0})
 
 class index:
     """Return the obj for this page"""
@@ -46,6 +48,15 @@ class index:
             return utils.callback(json.dumps(obj))
         except:
             utils.handle_error("failed to read file")
+
+class new_page:
+    def POST(self):
+        data = web.input(page_name="")
+        page_name = utils.create_page(data.page_name)
+        if page_name is None:
+            return 'FATAL'
+        else:
+            raise web.seeother('../%s/test.html' % page_name)
 
 class new_component:
     def GET(self,page_name):
@@ -482,7 +493,6 @@ class rename:
     def GET(self,page_name):
         data = web.input(new_name="")
         ## Fix name
-
         try:
             content = utils.fetch_file(page_name)
             try:
@@ -490,12 +500,6 @@ class rename:
                 obj["name"] = data.new_name
                 try:
                     utils.save_file(page_name,json.dumps(obj))
-					
-                    pages = db.GqlQuery("SELECT * FROM Page WHERE id = :1",int(page_name))
-                    for page in pages:
-                        page.title = data.new_name
-                        page.put()
-				
                     new_name = { 'name' : data.new_name }
                     return utils.callback(json.dumps(new_name))
                 except IOError:
