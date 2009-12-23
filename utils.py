@@ -36,13 +36,16 @@ def create_page(file_name,from_page=None):
     return page_name
 
  
-def get_page_num(st):
-    m = hashlib.md5()
-    m.update('this is my initial string')
-    m.update(str(time.time()))
-    m.update(str(st))
-
-    return string.replace(base64.encodestring(m.digest())[:-3], '/', '$')
+def delete_page(page_name):
+    db = pytc.HDB()
+    db.open(DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
+   
+    try: 
+        db.out(page_name)
+        db.out(page_name + ':perm')
+        return page_name
+    except:
+        return None
 
 def fetch_file(file_name):
     db = pytc.HDB()

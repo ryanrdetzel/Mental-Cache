@@ -1253,6 +1253,14 @@
         function cancelCopyPage(){
              $('#copy_page').hide("blind",{},200);
         }
+
+        function deletePage(){
+            var answer = confirm("Are you sure you want to permanently delete this page, THIS CAN NOT BE UNDONE!");
+            if (answer){
+                window.location = "http://" + hostname + '/page/' + page_name + '/delete';
+            }
+        }
+
 	</script>
 	
 	
@@ -1263,12 +1271,12 @@
 	<div id="page_index">
 		<ul>
 			<li><b>Pages:</b></li>
-			<li><a href="#" onclick="newPage();"><b>New Page</b></a></li>
+			<li><a href="#" onclick="newPage(); return false;"><b>New Page</b></a></li>
 			<li><a href="#" onclick="showBookmarks(); return false;">Bookmarks</a><img src="/down.png"/></li>
 			<!--<li><a href="">Recently Opened</a><img src="/down.png"/></li>
 			<li><a href="">All Pages</a><img src="/down.png"/></li>-->
-            <li><a href="#" onclick="copyPage();">Copy Page</a></li>
-            <li><a href="/page/delete">Delete Page</a></li>
+            <li><a href="#" onclick="copyPage(); return false;">Copy Page</a></li>
+            <li><a href="#" onclick="deletePage(); return false;">Delete Page</a></li>
 		</ul>
         <div id="copy_page">
 #end raw

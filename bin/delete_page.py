@@ -7,8 +7,8 @@ DBNAME="../mental_cache.hdb"
 db = pytc.HDB()
 db.open(DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
 
-id = 'mydiuan7'
+id = 'hstq0tke:perm'
 
 db.out(id)
-db.out(id + ':perm')
+#db.out(id + ':perm')
 

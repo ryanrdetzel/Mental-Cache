@@ -12,6 +12,7 @@ import logging
 urls = (
     '/new_page','new_page',
     '/([\w|-]+)/copy', 'copy',
+    '/([\w|-]+)/delete', 'delete',
     '/([\w|-]+)/rename', 'rename',
     '/([\w|-]+)/(\d+)/reorder', 'reorder_component',
     '/([\w|-]+)/reorder', 'reorder',
@@ -48,6 +49,13 @@ class index:
             return utils.callback(json.dumps(obj))
         except:
             utils.handle_error("failed to read file")
+
+class delete:
+    def GET(self,page_name):
+        if utils.delete_page(page_name) is not None:
+            raise web.seeother('http://%s/' % (web.ctx.get('host')))
+        else:
+            return 'Failed to delete page'
 
 class copy:
     def GET(self,page_name):
