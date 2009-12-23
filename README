@@ -1,6 +1,7 @@
-Mental Cache is a clone of the BackPack application...but it's free and open source.
+Mental Cache is a clone of the 37Signals Backpack application except it's free and open source.
 
 Required:
  - Python
  - web.py
  - Tokyo Cabinet
+

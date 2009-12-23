@@ -6,7 +6,6 @@ import time
 import textile
 import re
 from datetime import datetime
-#from google.appengine.ext import db
 import logging
 
 urls = (
@@ -446,6 +445,9 @@ class remove:
 
 class edit:
     def GET(self,page_name,id):
+
+        return utils.page_access(page_name)
+
         data = web.input(title="",description="")
         try:
             content = utils.fetch_file(page_name)

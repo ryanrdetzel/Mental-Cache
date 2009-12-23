@@ -5,7 +5,7 @@ from random import choice
 import string
 import logging
 import pytc
-import hashlib, time, base64
+import time
 
 DBNAME="mental_cache.hdb" ## move to config?
 
@@ -87,4 +87,19 @@ def check_permissions(page_name,userid):
         return None
 
 
+def page_access(page_name):
+    session = web.config._session
+    logging.info("Page Name %s" % page_name)
+
+    if session is None:
+        return handle_error("no session")
+
+    logging.info("User id %s" % session.userid)
+  
+    if session.userid is None:
+        return handle_error("not logged in")
+ 
+    if check_permissions(page_name,session.userid) is None:
+        return handle_error("access denied")
+    
 
