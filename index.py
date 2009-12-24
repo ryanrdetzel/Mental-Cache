@@ -38,7 +38,6 @@ class login:
             profile = pickle.loads(db.get(data.email))
             session.userid = profile['id']
 
-        #referer = web.ctx.env.get('HTTP_REFERER','/')
         raise web.seeother('/')
    
 class logout:
@@ -85,13 +84,14 @@ class index:
             else:
                 path = os.path.join(os.path.dirname(__file__), 'templates/denied.html')
                 template_values = {}
-        else:
-            path = os.path.join(os.path.dirname(__file__), 'templates/login.html')
-            template_values = {}
     
-        tmpl = Template( file = path, searchList = (template_values,) )
-        return tmpl
-
+            tmpl = Template( file = path, searchList = (template_values,) )
+            return tmpl
+        else:
+   #         path = os.path.join(os.path.dirname(__file__), 'templates/login.html')
+   #         template_values = {}
+            raise web.seeother('/login')
+    
 
 app = web.application(urls, globals())
 

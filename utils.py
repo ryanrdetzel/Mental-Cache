@@ -54,9 +54,12 @@ def fetch_file(file_name):
     content = db.get(file_name)
     return content
 
-def handle_error(msg):
+def handle_error(msg,redirect):
     obj = {}
     obj['error'] = msg;
+    if redirect is not None:
+        obj['redirect'] = redirect
+
     return callback(json.dumps(obj))
 
 def callback(json):
@@ -92,14 +95,14 @@ def page_access(page_name):
     logging.info("Page Name %s" % page_name)
 
     if session is None:
-        return handle_error("no session")
+        return handle_error("no session",'/login')
 
     logging.info("User id %s" % session.userid)
   
     if session.userid is None:
-        return handle_error("not logged in")
+        return handle_error("not logged in",'/login')
  
     if check_permissions(page_name,session.userid) is None:
-        return handle_error("access denied")
+        return handle_error("access denied",'/login')
     
-
+    return None

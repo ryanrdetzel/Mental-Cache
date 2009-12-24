@@ -31,6 +31,9 @@ app_page = web.application(urls, globals())
 class index:
     """Return the obj for this page"""
     def GET(self,page_name):
+        
+        access = utils.page_access(page_name)
+        if access is not None:  return access
 
         content = utils.fetch_file(page_name)
         ## We have to textile some fields
@@ -51,6 +54,9 @@ class index:
 
 class delete:
     def GET(self,page_name):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         if utils.delete_page(page_name) is not None:
             raise web.seeother('http://%s/' % (web.ctx.get('host')))
         else:
@@ -58,6 +64,9 @@ class delete:
 
 class copy:
     def GET(self,page_name):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(new_name="Default Page")
         page_name = utils.create_page(data.new_name,page_name)
         if page_name is None:
@@ -67,6 +76,9 @@ class copy:
 
 class new_page:
     def POST(self):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(page_name="")
         page_name = utils.create_page(data.page_name)
         if page_name is None:
@@ -76,6 +88,9 @@ class new_page:
 
 class new_component:
     def GET(self,page_name):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(title="",description="",type="",list_id="",after=0)
         try:
             content = utils.fetch_file(page_name)
@@ -250,6 +265,8 @@ class new_component:
 
 class get_component:
     def GET(self,page_name,component):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
         try:
             content = utils.fetch_file(page_name)
             ## We have to textile some fields
@@ -264,6 +281,9 @@ class get_component:
  
 class edit_list_item:
     def GET(self,page_name,id,list_id):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(title="")
         try:
             content = utils.fetch_file(page_name)
@@ -287,6 +307,9 @@ class edit_list_item:
 
 class clear_completed:
     def GET(self,page_name,id):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         try:
             content = utils.fetch_file(page_name)
             try:
@@ -308,6 +331,9 @@ class clear_completed:
 
 class change:
     def GET(self,page_name,id,list_item_id):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(status="")
         try:
             content = utils.fetch_file(page_name)
@@ -371,6 +397,9 @@ class change:
 
 class remove_list_item:
     def GET(self,page_name,id,list_item_id):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         try:
             content = utils.fetch_file(page_name)
             try:
@@ -411,6 +440,9 @@ class remove_list_item:
 
 class remove:
     def GET(self,page_name,id):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         try:
             content = utils.fetch_file(page_name)
             try:
@@ -446,7 +478,8 @@ class remove:
 class edit:
     def GET(self,page_name,id):
 
-        return utils.page_access(page_name)
+        access = utils.page_access(page_name)
+        if access is not None:  return access
 
         data = web.input(title="",description="")
         try:
@@ -473,6 +506,9 @@ class edit:
 
 class reorder_component:
     def GET(self,page_name,component):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(order="")
         try:
             content = utils.fetch_file(page_name)
@@ -492,6 +528,9 @@ class reorder_component:
 
 class reorder:
     def GET(self,page_name):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(order="")
         try:
             content = utils.fetch_file(page_name)
@@ -510,6 +549,9 @@ class reorder:
 
 class rename:
     def GET(self,page_name):
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
         data = web.input(new_name="")
         ## Fix name
         try:
