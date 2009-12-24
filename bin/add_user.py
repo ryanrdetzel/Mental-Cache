@@ -11,8 +11,9 @@ db.open(DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
 
 profile = { 
     'pw':hashlib.md5("").hexdigest(),
-    'id':'ff5632'
+    'id':'ff5634',
+    'name': 'Ryan Detzel'
 }
 
-db.put('ryand',pickle.dumps(profile))
+db.put('ryan',pickle.dumps(profile))
 #print pickle.loads(db.get('ryan'))

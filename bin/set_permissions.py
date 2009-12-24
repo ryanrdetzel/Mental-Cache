@@ -5,8 +5,8 @@ DBNAME="../mental_cache.hdb"
 db = pytc.HDB()
 db.open(DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
 
-db.put('3:perm','ff5634,')
-db.put('2:perm','ff5634,ff5633')
+#db.put('16qbwedl:perm:ff5634','3')
+#db.put('4kuytt0z:perm:ff5634','7')
+db.put('jy9elvhc:perm:ff5634','7')
 
-print db.get('3:perm')
-print db.get('2:perm')
+#print db.get('2:perm')

@@ -440,6 +440,7 @@
 		
 		function action_complete(){
 			 //$('#index').height($('#container').height() + 15);
+            //currentlyEditing = null;
 		}
 		
 		/* Check to see if the server returned an error */
@@ -450,6 +451,7 @@
             }
 			else if (data.error){
                 alert(data.error);
+                cancel(currentlyEditing);
 				return false;
 			}
 			return true;
@@ -467,7 +469,6 @@
 				if (check_error(data)){
 					$('#page_name').html(data.name).effect("highlight",{ "mode":"show"},1500);
 					document.title = data.name;
-					currentlyEditing = null;
 				}
 			    action_complete();
 			},"json");
@@ -724,7 +725,6 @@
 				action_complete();
 			},"json");
 			
-			currentlyEditing = null;
 		}
 		
 		function save_list(id){
@@ -740,7 +740,6 @@
 				action_complete();
 			},"json");
 			
-			currentlyEditing = null;
 		}
 		
 		
@@ -754,9 +753,9 @@
                 if (check_error(data)){
     				$('#divider_' + data.id).html('<hr /><p>'+data.title+'</p>').effect("highlight",{ "mode":"show"},1500);
                 }
+                action_complete();
 			},"json");
 			
-			currentlyEditing = null;
 		}
 		
 		function save_note(id){
@@ -774,7 +773,6 @@
 	    	    action_complete();
 			},"json");
 			
-			currentlyEditing = null;
 		}
 		
 		function edit_list_item(id){
@@ -846,10 +844,7 @@
 			var component_id = parts[1];
 			
 			$.get('http://'+hostname+'/page/'+page_name+'/'+component_id+'?callback=?',null,function(data){
-                if (check_error(data)){
     				$('#' + id).html('<span class="description"><input type="text" class="title" value="' + data.title + '" id="new_title_'+id+'" /><br /><textarea id="new_description_'+id+'" rows="15" cols="75">' + data.description + '</textarea><br /><div class="controls" id="controls_' + id + '"><input type="button" value="Save" onmousedown="save_note(\''+id+'\')"/> <span class="txt">or</span> <a href="#" class="cancel" onclick="cancel(\''+id+'\'); return false;">cancel</a></div></span>').show("blind",{},300,function(){ $.scrollTo('#' + id,300,{ "offset": {"top":-100}}); action_complete(); });
-                }
-				
 			},"json");
 		}
 		
@@ -1301,10 +1296,9 @@
 			<li><a href="#" onclick="newPage(); return false;"><b>New Page</b></a></li>
 			<li><a href="#" onclick="showBookmarks(); return false;">Bookmarks</a><img src="/down.png"/></li>
             <li><a href="/">Dashboard</a></li>
-			<!--<li><a href="">Recently Opened</a><img src="/down.png"/></li>
-			<li><a href="">All Pages</a><img src="/down.png"/></li>-->
             <li><a href="#" onclick="copyPage(); return false;">Copy Page</a></li>
             <li><a href="#" onclick="deletePage(); return false;">Delete Page</a></li>
+            <li><a href="/logout">logout</a> &nbsp; settings </li>
 		</ul>
         <div id="copy_page">
 #end raw

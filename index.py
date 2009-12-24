@@ -9,6 +9,7 @@ from Cheetah.Template import Template
 import os
 import re
 import pytc
+import simplejson as json
 
 urls = (
     '/page', page.app_page,
@@ -36,6 +37,7 @@ class login:
 
         if db.has_key(data.email):
             profile = pickle.loads(db.get(data.email))
+            session.profile = profile
             session.userid = profile['id']
 
         raise web.seeother('/')
@@ -54,14 +56,10 @@ class dashboard:
             db.open(utils.DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
 
             pages = []
-            db.iterinit()
-            for key in db.keys():
-                if re.search(":perm", key):
-                    if re.search(session.userid,db.get(key)):
-                        page_name = key.replace(":perm","")
-                        content = db.get(page_name)
-                        pages.append(page_name)
-
+            if db.has_key(session.userid + ':index'):
+                content = db.get(session.userid + ':index')
+                pages = json.loads(content)
+                
             path = os.path.join(os.path.dirname(__file__), 'templates/dashboard.html')
             template_values = { 'pages' : pages }
             tmpl = Template( file = path, searchList = (template_values,) )
@@ -80,7 +78,7 @@ class index:
             ## Validate that this user can view this page
             if utils.check_permissions(page_name,session.userid): 
                 path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-                template_values = { 'page_name':page_name,}
+                template_values = { 'page_name':page_name, 'profile' : session['profile'] }
             else:
                 path = os.path.join(os.path.dirname(__file__), 'templates/denied.html')
                 template_values = {}
