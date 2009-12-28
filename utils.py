@@ -109,15 +109,20 @@ def check_permissions(page_name,userid,type=1):
 
     logging.info("Check Permission %s - %s" % (userid,type))
 
-    if type == 1:
-        if int(file_perm) & 1:  return 1
-    elif type == 2:
-        if int(file_perm) & 2:  return 1
+    web.config._canwrite = 0
+    can_write = int(file_perm) & PERM_WRITE
+    if can_write > 0:
+        web.config._canwrite = 1
+
+    if type == PERM_READ:
+        if int(file_perm) & PERM_READ:  return 1
+    elif type == PERM_WRITE:
+        if int(file_perm) & PERM_WRITE:  return 1
     
     return None
 
 
-def page_access(page_name,type=PERM_READ):
+def page_access(page_name,type=PERM_READ,redirect=None):
     session = web.config._session
     logging.info("Page Name %s" % page_name)
 
@@ -130,6 +135,9 @@ def page_access(page_name,type=PERM_READ):
         return handle_error("not logged in",'/login')
  
     if check_permissions(page_name,session.userid,type) is None:
-        return handle_error("access denied")
+        if redirect is not None:
+            raise web.seeother(redirect)
+        else:
+            return handle_error("access denied")
     
     return None

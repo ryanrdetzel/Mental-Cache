@@ -368,6 +368,7 @@
 		var last_element_id = "page_name";
 #end raw
 		var page_name = "$page_name";
+        var can_write = $can_write;
 #raw
 		var currentlyHovering;
 		var currentlyEditing;
@@ -398,6 +399,7 @@
 			loadPage(page_name);
 			
 			/* Rename */
+            if (can_write){
 			$("#page_name").hover(
 			      function () {
 					id = "page_name";
@@ -425,6 +427,10 @@
 					reorder(result.substring(0, result.length-1));
 				},
 			});
+            }
+            else{
+                $('#add_to_page').hide();
+            }
 			//$("#sortable").disableSelection();
 			$("#sortable").sortable('disable');	
 			
@@ -616,10 +622,15 @@
 			if (component.completed){
 				//
 			}
-			
+		
+            var add_list_item_html = '';
+            if (can_write){
+                add_list_item_html = '<span class="add_list_item" id="add_list_item_'+id+'"><a href="#" onclick="new_item(\''+id+'\'); return false;" class="additem" id="add_item_link_'+id+'">Add a list item</a></span>';
+            }
+            	
 			jQuery("<li />")
 			             .attr("id",component.type + "_" + id)
-						 .html('<h3>'+title+'</h3><ul id="list_items_'+id+'" class="list_items"></ul><span class="add_list_item" id="add_list_item_'+id+'"><a href="#" onclick="new_item(\''+id+'\'); return false;" class="additem" id="add_item_link_'+id+'">Add a list item</a></span><ul id="list_completed_'+id+'" class="list_completed"></ul>')
+						 .html('<h3>'+title+'</h3><ul id="list_items_'+id+'" class="list_items"></ul>'+add_list_item_html + '<ul id="list_completed_'+id+'" class="list_completed"></ul>')
 			             .addClass("list")
 			             .appendTo($("#sortable"));
 
@@ -644,15 +655,19 @@
 			});
 			$("#list_items_"+id).sortable('disable');				
 			addEdit(component.type,id);
-			
+		
 			//Add active items to the list
 			if (component.items && component.order){
 				var order = component.order.split(",");
 				jQuery.each(order, function(i) {
 					var item = component.items[order[i]];
+                    var bull = '&bull;';
+                    if (can_write){
+                        bull = '<input type="checkbox" onclick="change_list_item_status(this,\'checkbox_' + id + '_' + order[i] +'\');" />';
+                    }
 					jQuery("<li />")
 					             .attr("id",component.type + "_" + id + "_" + order[i])
-								 .html('<input type="checkbox" onclick="change_list_item_status(this,\'checkbox_' + id + '_' + order[i] +'\');" /> <span>' + item.title + '</span>')
+								 .html(bull + ' <span>' + item.title + '</span>')
 					             .addClass("list_item")
 					             .appendTo($("#list_items_"+id));
 					
@@ -661,15 +676,20 @@
 				});
 			}
 			
+ 
 			//Add completed items
 			if (component.completed){
 				count = 0;
 				jQuery.each(component.completed, function(i) {
 					var item = component.completed[i];
+                    var bull = '&bull;';
+                    if (can_write){
+                        bull = '<input type="checkbox" checked="checked" onclick="change_list_item_status(this,\'checkbox_' + id + '_' + i +'\');"/> <a href="#" onclick="removeListItem(\'list_'+id+'_'+i+'\');return false;"><img src="/delete1.png" /></a>';
+                    }
 					count++;
 					jQuery("<li />")
 					             .attr("id",component.type + "_" + id + "_" + i)
-								 .html('<input type="checkbox" checked="checked" onclick="change_list_item_status(this,\'checkbox_' + id + '_' + i +'\');"/> <a href="#" onclick="removeListItem(\'list_'+id+'_'+i+'\');return false;"><img src="/delete1.png" /></a> ' + item.title + ' (' + item.completed + ')')
+                                 .html(bull + ' ' + item.title + ' (' + item.completed + ')')
 					             .addClass("list_completed")
 					             .appendTo($('#list_completed_'+id));
 										
@@ -926,7 +946,8 @@
 		
 		function addEdit(type,id){
 			id = type + "_" + id;
-			
+		
+            if (!can_write)	return;
 			//console.log("Add Edit %s of %s",type,id);
 			$("#" + id).hover(
 			      function () {
@@ -958,6 +979,8 @@
 		}
 		function addEditList(parent_id,id){
 			//console.log("Add Edit %s of %s",parent_id,id);
+            if (!can_write) return;
+
 			$("#" + id).hover(
 			      function () {
 				if (currentlyEditing == id) return;
@@ -981,6 +1004,7 @@
 		}
 		
 		function addRemoveListLinks(id){
+            if (!can_write) return;
 			// If commpleted has items add links
 			var count = $('#list_completed_'+id).children("li").length;
 			if (count > 0){	
@@ -1000,6 +1024,8 @@
 		}
 		
 		function change_list_item_status(obj,id){
+            if (!can_write) return;
+
 			status = 'active';
 			if ($(obj).attr('checked')){
 				status = 'completed';
@@ -1067,6 +1093,8 @@
 		}
 		
 		function insert_new_list(id){
+            if (!can_write) return;
+
 			var parts = id.split("_");					
 			
 			var title = $('#insert_list_title_'+id).val();
@@ -1277,6 +1305,10 @@
         }
 
         function deletePage(){
+            if (!can_write){
+                alert("You don't have sufficient permissions to delete this page");
+                return;
+            }
             var answer = confirm("Are you sure you want to permanently delete this page, THIS CAN NOT BE UNDONE!");
             if (answer){
                 window.location = "http://" + hostname + '/page/' + page_name + '/delete';

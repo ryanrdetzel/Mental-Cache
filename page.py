@@ -54,7 +54,8 @@ class index:
 
 class delete:
     def GET(self,page_name):
-        access = utils.page_access(page_name,utils.PERM_WRITE)
+        referer = web.ctx.env.get('HTTP_REFERER', '/')
+        access = utils.page_access(page_name,utils.PERM_WRITE,referer)
         if access is not None:  return access
 
         if utils.delete_page(page_name) is not None:
@@ -76,8 +77,12 @@ class copy:
 
 class new_page:
     def POST(self):
-        #access = utils.page_access(page_name)
-        #if access is not None:  return access
+        session = web.config._session
+        if session is None:
+            raise web.seeother('http://%s/login' % (web.ctx.get('host')))
+
+        if session.userid is None:
+            raise web.seeother('http://%s/login' % (web.ctx.get('host')))
 
         data = web.input(page_name="")
         page_name = utils.create_page(data.page_name)

@@ -78,7 +78,7 @@ class index:
             ## Validate that this user can view this page
             if utils.check_permissions(page_name,session.userid): 
                 path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-                template_values = { 'page_name':page_name, 'profile' : session['profile'] }
+                template_values = { 'page_name':page_name, 'profile' : session['profile'], 'can_write' : web.config._canwrite }
             else:
                 path = os.path.join(os.path.dirname(__file__), 'templates/denied.html')
                 template_values = {}
@@ -98,6 +98,7 @@ web.config.debug = False
 web.config.session_parameters['cookie_name'] = 'mentalcache'
 web.config.session_parameters['cookie_domain'] = None
 web.config.session_parameters['timeout'] = 86400, #24 * 60 * 60, # 24 hours   in seconds
+#web.config.session_parameters['timeout'] = 30
 web.config.session_parameters['ignore_change_ip'] = True
 web.config.session_parameters['secret_key'] = 'fLjU209834kjhsdf8213'
 web.config.session_parameters['expired_message'] = 'Session expired'
