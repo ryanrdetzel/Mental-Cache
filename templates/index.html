@@ -358,8 +358,9 @@
             display:inline;
         }	
 	</style>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+    
+    <script src="/static/scripts/jquery.min.js"></script>
+    <script src="/static/scripts/jquery-ui.min.js"></script>
 	<script src="/static/scripts/jquery.scrollTo.js"></script>
 	<script src="/static/scripts/ajaxupload.js"></script>
 	
@@ -397,8 +398,14 @@
 		
 		$(document).ready(function() {
 			loadPage(page_name);
-			
-			/* Rename */
+		
+	
+            $("#dialog").dialog({
+                bgiframe: true,
+                height: 140,
+                modal: true
+            });
+		    	/* Rename */
             if (can_write){
 			$("#page_name").hover(
 			      function () {
@@ -1327,10 +1334,11 @@
 			<li><b>Pages:</b></li>
 			<li><a href="#" onclick="newPage(); return false;"><b>New Page</b></a></li>
 			<li><a href="#" onclick="showBookmarks(); return false;">Bookmarks</a><img src="/down.png"/></li>
-            <li><a href="/">Dashboard</a></li>
+            <li><a href="/">Dashboard</a>&nbsp; &nbsp; - &nbsp;</li>
+            <li><a href="#" onclick="sharePage(); return false;">Share Page</a></li>
             <li><a href="#" onclick="copyPage(); return false;">Copy Page</a></li>
             <li><a href="#" onclick="deletePage(); return false;">Delete Page</a></li>
-            <li><a href="/logout">logout</a> &nbsp; settings </li>
+            <li><a href="/logout">logout</a></li>
 		</ul>
         <div id="copy_page">
 #end raw
@@ -1339,6 +1347,10 @@
             <b>New Page Name:</b> <input type="text" name="new_name" />
             <input type="submit" value=" Copy Page " /> <span class="txt"> or</span> <a href="#" class="cancel" onclick="cancelCopyPage(); return false;">cancel</a>
             </form>
+        </div>
+
+        <div id="share_page">
+            <form action="" method="post">
         </div>
 
         <div id="new_page">
