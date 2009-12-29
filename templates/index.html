@@ -326,10 +326,32 @@
 			padding:10px;
 			display:none;
 		}
-	    div#new_page, div#copy_page{
+	    div#new_page, div#copy_page,div#share_page{
             padding:10px;
             display:none;
-        }	
+        }
+        div#share_page div.private, div#share_page div.public{
+            padding:0px;
+        }
+        div#share_page div.private span,div#share_page div.public span{
+            font-size:11px;
+        }
+        div#share_page ul{
+            height:140px;
+            border:2px solid #ccc;
+            overflow:scroll;
+            list-style:none;
+            padding:0;
+        }
+        div#share_page ul li{
+            padding:4px;
+            margin:0;
+        }
+        div#share_page div.page_url{
+            padding-bottom:7px;
+            margin-bottom:5px;
+            border-bottom:1px solid #ccc;
+        }
 		div#page_index{
 			background-color:#fff;
 			border:1px solid #ccc;
@@ -357,11 +379,18 @@
             padding:5px;
             display:inline;
         }	
+        #simplemodal-overlay {background-color:#ccc;}
+        #simplemodal-container {background-color:#fff; border:8px solid #aaa; padding:12px;}
+
 	</style>
     
+    <link rel="stylesheet" type="text/css"  media="print" href="/static/styles/print.css" />
+ 
     <script src="/static/scripts/jquery.min.js"></script>
     <script src="/static/scripts/jquery-ui.min.js"></script>
 	<script src="/static/scripts/jquery.scrollTo.js"></script>
+    <script src="/static/scripts/jquery.simplemodal.min.js"></script>
+
 	<script src="/static/scripts/ajaxupload.js"></script>
 	
 	<script>
@@ -370,6 +399,7 @@
 #end raw
 		var page_name = "$page_name";
         var can_write = $can_write;
+        var is_public = $is_public;
 #raw
 		var currentlyHovering;
 		var currentlyEditing;
@@ -400,11 +430,6 @@
 			loadPage(page_name);
 		
 	
-            $("#dialog").dialog({
-                bgiframe: true,
-                height: 140,
-                modal: true
-            });
 		    	/* Rename */
             if (can_write){
 			$("#page_name").hover(
@@ -1310,7 +1335,20 @@
         function cancelCopyPage(){
              $('#copy_page').hide("blind",{},200);
         }
+        function sharePage(){
+            if (is_public){
+                $('#private_info').hide();
+                $('#public_info').show();
+            }
+            else{
+                $('#private_info').show();
+                $('#public_info').hide();
+            }
 
+            $('#page_url').html('<b>Page url:</b> &nbsp;' + document.location);
+            $('#share_page').modal({ minHeight:400, minWidth: 800, maxHeight:400, maxWidth:800,position:[80,55] });
+            $('#close_button').focus();
+        }
         function deletePage(){
             if (!can_write){
                 alert("You don't have sufficient permissions to delete this page");
@@ -1350,7 +1388,34 @@
         </div>
 
         <div id="share_page">
-            <form action="" method="post">
+            <div>
+               <div class="page_url" id="page_url">
+                    Page URL: http://
+                </div>
+                    <div class="public" id="private_info">
+                        This page is currently <b>Private</b>. <br /><br />
+                        <span>Private pages are only accesible by the page creator and the people you've shared this page with. You can add additional people to the list below to share this page with them or you can make the page public therfor allowing anyone to access it.</span><br /><br />
+                        <input type="button" value="Make Page Public" />
+                    </div>
+                    <div class="public" id="public_info">
+                        This page is currently <b>Public</b> <br />
+                        <span>Public pages are viewable to anyone that knows the url. If you only want to make this page accesible to certain people you should make the page private and add the people to the list below. </span><br /><br />
+                       <input type="button" value="Make Page Private" />
+                    </div>
+<br />
+                    <b>Share page with:</b>&nbsp; <input type="text" name="email" style="width:250px;"/> 
+                    <select><option> Read Only </option><option> Read &amp; Write</option></select>
+                    <input type="button" value=" Add User " /> <br /><br />
+                    <ul class="shared_users">
+                        <li><a href="">remove</a> &nbsp;myemailaddressgmail.com</li>
+                        <li><a href="">remove</a> &nbsp;<b>testuser@gmail.com*</b></li>
+                    </ul>
+                <div class="controls">
+                    <input type="button" value=" Close " onclick="$.modal.close();" style="font-weight:bold;font-size:14px;width:70px " id="close_button" />
+                    
+                    <i style="font-size:11px;">*User has read and write access.</i>
+                </div>
+            </div>
         </div>
 
         <div id="new_page">

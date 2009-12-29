@@ -78,7 +78,8 @@ class index:
             ## Validate that this user can view this page
             if utils.check_permissions(page_name,session.userid): 
                 path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-                template_values = { 'page_name':page_name, 'profile' : session['profile'], 'can_write' : web.config._canwrite }
+                ## Check to see if there a public permission
+                template_values = { 'page_name':page_name, 'profile' : session['profile'], 'can_write' : web.config._canwrite, 'is_public': '0' }
             else:
                 path = os.path.join(os.path.dirname(__file__), 'templates/denied.html')
                 template_values = {}
