@@ -478,7 +478,7 @@
 		
 		function action_complete(){
 			 //$('#index').height($('#container').height() + 15);
-            //currentlyEditing = null;
+            currentlyEditing = null;
 		}
 		
 		/* Check to see if the server returned an error */
@@ -896,7 +896,7 @@
 			var component_id = parts[1];
 			
 			$.get('http://'+hostname+'/page/'+page_name+'/'+component_id+'?callback=?',null,function(data){
-    				$('#' + id).html('<span class="description"><input type="text" class="title" value="' + data.title + '" id="new_title_'+id+'" /><br /><textarea id="new_description_'+id+'" rows="15" cols="75">' + data.description + '</textarea><br /><div class="controls" id="controls_' + id + '"><input type="button" value="Save" onmousedown="save_note(\''+id+'\')"/> <span class="txt">or</span> <a href="#" class="cancel" onclick="cancel(\''+id+'\'); return false;">cancel</a></div></span>').show("blind",{},300,function(){ $.scrollTo('#' + id,300,{ "offset": {"top":-100}}); action_complete(); });
+    				$('#' + id).html('<span class="description"><input type="text" class="title" value="' + data.title + '" id="new_title_'+id+'" /><br /><textarea id="new_description_'+id+'" rows="15" cols="75">' + data.description + '</textarea><br /><div class="controls" id="controls_' + id + '"><input type="button" value="Save" onmousedown="save_note(\''+id+'\')"/> <span class="txt">or</span> <a href="#" class="cancel" onclick="cancel(\''+id+'\'); return false;">cancel</a></div></span>').show("blind",{},300,function(){ $.scrollTo('#' + id,300,{ "offset": {"top":-100}});  });
 			},"json");
 		}
 		
