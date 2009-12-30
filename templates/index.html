@@ -1360,6 +1360,21 @@
             }
         }
 
+        function share(status){
+            $.get('http://'+hostname+'/page/'+page_name+'/share?callback=?', {'status': status} ,function(data){
+                if (check_error(data)){
+                    if (data.status == "public"){
+                        $('#private_info').hide();
+                       $('#public_info').show();
+                    }
+                    else{
+                        $('#private_info').show();
+                        $('#public_info').hide();
+                    }
+                }
+            },"json");
+        }
+
 	</script>
 	
 	
@@ -1377,6 +1392,7 @@
             <li><a href="#" onclick="copyPage(); return false;">Copy Page</a></li>
             <li><a href="#" onclick="deletePage(); return false;">Delete Page</a></li>
             <li><a href="/logout">logout</a></li>
+            <li><a href="#" onclick="share('public'); return false;">SHARE</a></li>
 		</ul>
         <div id="copy_page">
 #end raw
@@ -1395,12 +1411,12 @@
                     <div class="public" id="private_info">
                         This page is currently <b>Private</b>. <br /><br />
                         <span>Private pages are only accesible by the page creator and the people you've shared this page with. You can add additional people to the list below to share this page with them or you can make the page public therfor allowing anyone to access it.</span><br /><br />
-                        <input type="button" value="Make Page Public" />
+                        <input type="button" value="Make Page Public" onclick="share('public');" />
                     </div>
                     <div class="public" id="public_info">
-                        This page is currently <b>Public</b> <br />
+                        This page is currently <b>Public</b>.<br /> <br />
                         <span>Public pages are viewable to anyone that knows the url. If you only want to make this page accesible to certain people you should make the page private and add the people to the list below. </span><br /><br />
-                       <input type="button" value="Make Page Private" />
+                       <input type="button" value="Make Page Private" onclick="share('private');" />
                     </div>
 <br />
                     <b>Share page with:</b>&nbsp; <input type="text" name="email" style="width:250px;"/> 

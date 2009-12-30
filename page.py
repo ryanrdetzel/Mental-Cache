@@ -7,10 +7,12 @@ import textile
 import re
 from datetime import datetime
 import logging
+import pytc
 
 urls = (
     '/new_page','new_page',
     '/([\w|-]+)/copy', 'copy',
+    '/([\w|-]+)/share', 'share',
     '/([\w|-]+)/delete', 'delete',
     '/([\w|-]+)/rename', 'rename',
     '/([\w|-]+)/(\d+)/reorder', 'reorder_component',
@@ -52,6 +54,28 @@ class index:
         except:
             utils.handle_error("failed to read file")
 
+class share:
+    def GET(self,page_name):
+    
+        data = web.input(email=None, status="public")
+
+        access = utils.page_access(page_name)
+        if access is not None:  return access
+
+        db = pytc.HDB()
+        db.open(utils.DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
+
+        if data.email is not None:
+            email = ""
+        else:
+            if data.status == "public":
+                db.put(page_name + ":public","1")
+                return utils.callback('{ "status":"public"}')
+            else:
+                if db.has_key(page_name + ":public"):
+                    db.out(page_name + ":public")
+                return utils.callback('{ "status":"private"}')
+    
 class delete:
     def GET(self,page_name):
         referer = web.ctx.env.get('HTTP_REFERER', '/')

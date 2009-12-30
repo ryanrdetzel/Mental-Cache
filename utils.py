@@ -106,11 +106,18 @@ def check_permissions(page_name,userid,type=1):
     db.open(DBNAME, pytc.HDBOWRITER | pytc.HDBOCREAT)
  
     file_perm = db.get(page_name + ":perm:" + userid)
+    is_public = db.has_key(page_name + ":public")
 
     logging.info("Check Permission %s - %s" % (userid,type))
 
-    web.config._canwrite = 0
+    web.config._canwrite = 0    
+    web.config._ispublic = 0
+
+    if is_public:
+        web.config._ispublic = 1
+
     can_write = int(file_perm) & PERM_WRITE
+    
     if can_write > 0:
         web.config._canwrite = 1
 
